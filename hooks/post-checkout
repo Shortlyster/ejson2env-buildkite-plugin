@@ -7,14 +7,22 @@ EJSON2ENV_BIN_PATH="$EJSON2ENV_PLUGIN_ROOT/ejson2env"
 BUILDKITE_PLUGIN_EJSON2ENV_EJSON_FILE="${BUILDKITE_PLUGIN_EJSON2ENV_EJSON_FILE:-.buildkite/secrets.ejson}"
 BUILDKITE_PLUGIN_EJSON2ENV_EJSON_PRIVATE_KEY_ENV_KEY="${BUILDKITE_PLUGIN_EJSON2ENV_EJSON_PRIVATE_KEY_ENV_KEY:-EJSON_PRIVATE_KEY}"
 
+die() {
+  if [ "${BUILDKITE_PLUGIN_EJSON2ENV_GRACEFUL:-false}" == "true" ]; then
+    exit 0
+  else
+    exit 1
+  fi
+}
+
 validate_config() {
   if [ ! -f "${BUILDKITE_PLUGIN_EJSON2ENV_EJSON_FILE}" ]; then
     echo "ejson_file not found at \"$BUILDKITE_PLUGIN_EJSON2ENV_EJSON_FILE\""
-    exit 1
+    die
   fi
   if [ "${!BUILDKITE_PLUGIN_EJSON2ENV_EJSON_PRIVATE_KEY_ENV_KEY:-}" == "" ]; then
     echo "ejson_private_key_env_key \"$BUILDKITE_PLUGIN_EJSON2ENV_EJSON_PRIVATE_KEY_ENV_KEY\" is empty or not set"
-    exit 1
+    die
   fi
 }
 
@@ -29,7 +37,7 @@ export_secrets() {
     eval "$export_lines"
   else
     echo "Failed to export EJSON secrets from $BUILDKITE_PLUGIN_EJSON2ENV_EJSON_FILE"
-    exit 1
+    die
   fi
 }
 

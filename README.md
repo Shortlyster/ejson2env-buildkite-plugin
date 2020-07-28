@@ -11,6 +11,7 @@ steps:
       - envato/ejson2env#v0.1.0:
           ejson_file: .buildkite/secrets.ejson
           ejson_private_key_env_key: EJSON_PRIVATE_KEY
+          graceful: true
 ```
 
 ## Configuration
@@ -26,6 +27,12 @@ Default: `.buildkite/secrets.ejson`
 The environment variable containing the private key to decrypt the EJSON file.
 
 Default: `EJSON_PRIVATE_KEY`
+
+### `graceful` (optional)
+
+To exit with non-zero status or not
+
+Default: `false`
 
 ## License
 
